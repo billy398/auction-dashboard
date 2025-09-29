@@ -64,44 +64,44 @@ const timeShort = d => (d ? d.toLocaleString() : "–");
 
 /* Field mapper with robust fallbacks */
 function mapItem(raw) {
-    const title = raw.name || `Item ${raw.id ?? ""}`;
-    const lot = raw.number != null ? String(raw.number) : "";
-    const image = Array.isArray(raw.pictures) && raw.pictures[0]?.url ? raw.pictures[0].url : null;
+  const title = raw.name || `Item ${raw.id ?? ""}`;
+  const lot   = raw.number != null ? String(raw.number) : "";
+  const image = Array.isArray(raw.pictures) && raw.pictures[0]?.url ? raw.pictures[0].url : null;
 
-    const currentPrice = raw.last_bid?.amount ? Number(String(raw.last_bid.amount).replace(/[^0-9.\-]/g, "")) : 0;
-    const bidsCount = Number(raw.bid_count ?? 0);
-    const bidder = raw.last_bid?.bidder?.display_name || "";
+  const currentPrice = raw.last_bid?.amount ? Number(String(raw.last_bid.amount).replace(/[^0-9.\-]/g, "")) : 0;
+  const bidsCount = Number(raw.bid_count ?? 0);
+  const bidder = raw.last_bid?.bidder?.display_name || "";
 
-    const endsAt = raw.end_at ? new Date(raw.end_at.replace(" ", "T") + (raw.end_at.endsWith("Z") ? "" : "Z")) : null;
+  const endsAt = raw.end_at ? new Date(raw.end_at.replace(" ", "T") + (raw.end_at.endsWith("Z") ? "" : "Z")) : null;
 
-    let status = "open";
-    if (raw.paused) status = "paused";
-    if (raw.ended) status = "closed";
-    if (!raw.started) status = "pending";
+  let status = "open";
+  if (raw.paused) status = "paused";
+  if (raw.ended) status = "closed";
+  if (!raw.started) status = "pending";
 
-    // NEW: Bid Increment
-    const bidIncrement = raw.bid_increment != null ? Number(raw.bid_increment) : null;
+  // NEW: Bid Increment
+  const bidIncrement = raw.bid_increment != null ? Number(raw.bid_increment) : null;
 
-    const nextMinBid = raw.minimum_bid != null ? Number(raw.minimum_bid) : null;
-    const startBid = raw.start_bid != null ? Number(raw.start_bid) : null;
-    const link = raw.url || (raw.id ? `https://givebutter.com/auctions/${raw.auction_id}/items/${raw.id}` : "");
+  const nextMinBid = raw.minimum_bid != null ? Number(raw.minimum_bid) : null;
+  const startBid   = raw.start_bid != null ? Number(raw.start_bid) : null;
+  const link       = raw.url || (raw.id ? `https://givebutter.com/auctions/${raw.auction_id}/items/${raw.id}` : "");
 
-    return {
-        id: raw.id,
-        title,
-        lot,
-        image,
-        currentPrice,
-        bidsCount,
-        bidder,
-        status,
-        endsAt,
-        bidIncrement,
-        nextMinBid,
-        startBid,
-        link,
-        raw
-    };
+  return {
+    id: raw.id,
+    title,
+    lot,
+    image,
+    currentPrice,
+    bidIncrement,
+    bidsCount,
+    bidder,
+    status,
+    endsAt,
+    nextMinBid,
+    startBid,
+    link,
+    raw
+  };
 }
 
 
@@ -115,6 +115,7 @@ function render(items) {
             case "title": return a.title.localeCompare(b.title) * dir;
             case "lot": return a.lot.localeCompare(b.lot, undefined, { numeric: true }) * dir;
             case "price": return (a.currentPrice - b.currentPrice) * dir;
+            case "increment": return ((a.bidIncrement ?? -Infinity) - (b.bidIncrement ?? -Infinity)) * dir;
             case "bids": return (a.bidsCount - b.bidsCount) * dir;
             case "bidder": return a.bidder.localeCompare(b.bidder) * dir;
             case "ends": {
@@ -132,8 +133,8 @@ function render(items) {
         tbody.innerHTML = `<tr><td colspan="9" class="center muted">No items match your filters.</td></tr>`;
     } else {
         tbody.innerHTML = sorted.map(item => {
-            const statusClass = item.status === "open" ? "status-open" : item.status === "closed" ? "status-closed" : "";
-            return `
+  const statusClass = item.status === "open" ? "status-open" : item.status === "closed" ? "status-closed" : "";
+  return `
     <tr>
       <td data-label="Item">
         <div style="display:flex;flex-direction:column;gap:4px">
@@ -144,14 +145,15 @@ function render(items) {
       <td class="nowrap" data-label="Lot">${escapeHtml(item.lot || "")}</td>
       <td data-label="Image">${item.image ? `<img class="thumb" src="${escapeAttr(item.image)}" alt="item image">` : `<span class="muted">—</span>`}</td>
       <td class="price" data-label="Current Price">${fmtMoney(item.currentPrice)}</td>
+      <td class="price" data-label="Bid Increment">${item.bidIncrement != null ? fmtMoney(item.bidIncrement) : `<span class="muted">—</span>`}</td>
       <td class="nowrap" data-label="Bids">${item.bidsCount}</td>
       <td data-label="Leading Bidder">${item.bidder ? escapeHtml(item.bidder) : `<span class="muted">—</span>`}</td>
       <td class="nowrap" data-label="Ends">${item.endsAt ? escapeHtml(timeShort(item.endsAt)) : `<span class="muted">—</span>`}</td>
       <td data-label="Status"><span class="status-chip ${statusClass}">${escapeHtml(item.status || "—")}</span></td>
-      <td class="price" data-label="Buy Now">${fmtMoney(item.buyNow)}</td>
     </tr>
   `;
-        }).join("");
+}).join("");
+
     }
 
     // KPIs & Summary (totals)
