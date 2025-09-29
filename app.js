@@ -101,7 +101,13 @@ function parseNumber(v) {
 
 /* Dates */
 const parseDate = s => (s ? new Date(s) : null);
-const timeShort = d => (d ? d.toLocaleString() : "–");
+const timeShort = (d) => {
+  if (!d) return "–";
+  const date = new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(d);
+  const time = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute: "2-digit", hour12: true }).format(d);
+  return `${date}, ${time}`; // e.g., "Sep 30, 2025, 7:05 PM"
+};
+
 
 /* Field mapper with robust fallbacks */
 function mapItem(raw) {
