@@ -39,10 +39,25 @@ const refreshBtn = document.getElementById("refresh-btn");
 const autoRefreshCb = document.getElementById("auto-refresh");
 const refreshSeconds = document.getElementById("refresh-seconds");
 const refreshEveryLabel = document.getElementById("refresh-every");
+const minViewCb = document.getElementById("min-view");
+
 
 /* Helpers */
 const fmtMoney = n => Number(n || 0).toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 });
 const safeText = s => (s == null ? "" : String(s));
+
+function applyMinViewClass() {
+  const on = !!minViewCb?.checked;
+  document.body.classList.toggle("minview", on);
+  try { localStorage.setItem("minView", on ? "1" : "0"); } catch (_) {}
+}
+
+if (minViewCb) {
+  // restore previous choice
+  try { minViewCb.checked = localStorage.getItem("minView") === "1"; } catch (_) {}
+  applyMinViewClass();
+  minViewCb.addEventListener("change", applyMinViewClass);
+}
 
 /* Try to parse a numeric value that might be:
    - number
