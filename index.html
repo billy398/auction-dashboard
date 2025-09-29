@@ -250,16 +250,19 @@
             overflow-x: auto
         }
 
+        /* hide the button by default (desktop/tablet) */
+        #min-view-btn {
+            display: none;
+        }
+
         /* fallback if someone forces table on phone */
-
         @media (max-width: 760px) {
-
-            /* hide the button by default (desktop/tablet) */
-            #min-view-btn { display: none; }
-
             /* inside your existing mobile media query (@media max-width: 760px) add: */
             @media (max-width: 760px) {
-            #min-view-btn { display: inline-flex; align-items: center; }
+                #min-view-btn {
+                    display: inline-flex;
+                    align-items: center;
+                }
             }
 
             /* Minimum view: hide certain fields on phones */
