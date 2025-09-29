@@ -139,27 +139,26 @@ function render(items) {
     tbody.innerHTML = `<tr><td colspan="9" class="center muted">No items match your filters.</td></tr>`;
   } else {
     tbody.innerHTML = sorted.map(item => {
-      const statusClass = item.status === "open" ? "status-open" : item.status === "closed" ? "status-closed" : "";
-      return `
-        <tr>
-          <td>
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <div>${escapeHtml(item.title)}</div>
-              ${item.link ? `<a class="link muted" href="${escapeAttr(item.link)}" target="_blank" rel="noopener">Open item ↗</a>` : ""}
-
-            </div>
-          </td>
-          <td class="nowrap">${escapeHtml(item.lot || "")}</td>
-          <td>${item.image ? `<img class="thumb" src="${escapeAttr(item.image)}" alt="item image">` : `<span class="muted">—</span>`}</td>
-          <td class="price">${fmtMoney(item.currentPrice)}</td>
-          <td class="nowrap">${item.bidsCount}</td>
-          <td>${item.bidder ? escapeHtml(item.bidder) : `<span class="muted">—</span>`}</td>
-          <td class="nowrap">${item.endsAt ? escapeHtml(timeShort(item.endsAt)) : `<span class="muted">—</span>`}</td>
-          <td><span class="status-chip ${statusClass}">${escapeHtml(item.status || "—")}</span></td>
-          <td class="price">${fmtMoney(item.buyNow)}</td>
-        </tr>
-      `;
-    }).join("");
+  const statusClass = item.status === "open" ? "status-open" : item.status === "closed" ? "status-closed" : "";
+  return `
+    <tr>
+      <td data-label="Item">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div>${escapeHtml(item.title)}</div>
+          ${item.link ? `<a class="link muted" href="${escapeAttr(item.link)}" target="_blank" rel="noopener">Open item ↗</a>` : ""}
+        </div>
+      </td>
+      <td class="nowrap" data-label="Lot">${escapeHtml(item.lot || "")}</td>
+      <td data-label="Image">${item.image ? `<img class="thumb" src="${escapeAttr(item.image)}" alt="item image">` : `<span class="muted">—</span>`}</td>
+      <td class="price" data-label="Current Price">${fmtMoney(item.currentPrice)}</td>
+      <td class="nowrap" data-label="Bids">${item.bidsCount}</td>
+      <td data-label="Leading Bidder">${item.bidder ? escapeHtml(item.bidder) : `<span class="muted">—</span>`}</td>
+      <td class="nowrap" data-label="Ends">${item.endsAt ? escapeHtml(timeShort(item.endsAt)) : `<span class="muted">—</span>`}</td>
+      <td data-label="Status"><span class="status-chip ${statusClass}">${escapeHtml(item.status || "—")}</span></td>
+      <td class="price" data-label="Buy Now">${fmtMoney(item.buyNow)}</td>
+    </tr>
+  `;
+}).join("");
   }
 
   // KPIs & Summary (totals)

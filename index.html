@@ -20,7 +20,7 @@
     .kpi .value{display:block;font-size:20px;color:var(--text);margin-top:4px}
     .controls{margin-top:14px;gap:8px}
     input[type="text"], input[type="number"]{background:#0f1524;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none}
-    input[type="text"]{width:100%} input[type="number"]{width:100px}
+    input[type="text"]{flex:1;min-width:140px} input[type="number"]{width:92px}
     .btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#08111c;font-weight:700;padding:10px 14px;border-radius:10px;cursor:pointer}
     .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
     table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
@@ -38,9 +38,72 @@
     .warn{color:var(--warn);padding:10px 12px;border:1px solid rgba(251,191,36,.35);border-radius:10px;background:rgba(251,191,36,.08)}
     .pill{padding:3px 8px;border-radius:999px;background:#0f1524;border:1px solid var(--border);font-size:12px;color:var(--muted)}
     .small{font-size:12px;color:var(--muted)} .center{text-align:center} .nowrap{white-space:nowrap}
-    .flex{display:flex;gap:10px;align-items:center}
+    .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .right{margin-left:auto}
     .link{color:var(--accent);text-decoration:none} .link:hover{text-decoration:underline}
+
+    /* ---- Mobile responsiveness ---- */
+    .table-scroller{overflow-x:auto} /* fallback if someone forces table on phone */
+
+    @media (max-width: 760px) {
+      /* stack title/last-updated */
+      .row:first-child { gap: 6px }
+      h1 { font-size: 20px }
+
+      /* Compact KPI font a bit */
+      .kpi .value{font-size:18px}
+
+      /* Toolbar wraps nicely */
+      .controls .flex { gap:8px }
+      .pill { font-size: 11px }
+
+      /* Turn table into card-like stacked rows */
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { 
+        /* hide the header row but keep for a11y/sort tapping if needed */
+        position: absolute; 
+        top: -9999px; 
+        left: -9999px; 
+      }
+      table { border: none; }
+      tbody tr {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin: 10px 0;
+        padding: 8px 10px;
+      }
+      tbody td {
+        border: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        padding: 8px 0;
+      }
+      tbody td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 12px;
+        flex: 0 0 48%;
+        max-width: 48%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      tbody td > * { max-width: 50%; }
+      tbody tr:nth-child(odd){ background: var(--card) } /* no zebra on cards */
+
+      /* Images full width on their line */
+      td[data-label="Image"] { align-items: center; }
+      td[data-label="Image"] .thumb { width: 100%; height: auto; max-height: 220px; }
+
+      /* Smaller buttons */
+      .btn { padding: 9px 12px }
+
+      /* Footer stacks */
+      .footer .card { flex: 1 1 100% }
+    }
   </style>
 </head>
 <body>
@@ -75,7 +138,7 @@
 
     <div id="alert" style="margin-top:12px;"></div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card table-scroller" style="margin-top:12px">
       <table id="items-table">
         <thead>
           <tr>
@@ -110,8 +173,8 @@
       <div class="card" style="flex:1">
         <div class="kpi">Tips</div>
         <ul class="muted" style="margin:6px 0 0 18px;">
-          <li>Click a column header to sort.</li>
-          <li>Use search to filter by title, bidder, or lot.</li>
+          <li>Tap a row label to view values on phones.</li>
+          <li>Search filters by title, bidder, or lot.</li>
           <li>Open DevTools → Console to see debug logs.</li>
         </ul>
       </div>
