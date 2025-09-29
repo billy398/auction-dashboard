@@ -254,19 +254,30 @@
 
         @media (max-width: 760px) {
 
+            /* hide the button by default (desktop/tablet) */
+            #min-view-btn { display: none; }
+
+            /* inside your existing mobile media query (@media max-width: 760px) add: */
+            @media (max-width: 760px) {
+            #min-view-btn { display: inline-flex; align-items: center; }
+            }
+
             /* Minimum view: hide certain fields on phones */
             body.minview td[data-label="Image"],
             body.minview td[data-label="Lot"],
             body.minview td[data-label="Bid Increment"],
             body.minview td[data-label="Ends"] {
-            display: none;
+                display: none;
             }
 
             /* Optional: tighten card spacing when min view is on */
             body.minview tbody tr {
-            padding: 6px 8px;
+                padding: 6px 8px;
             }
-            body.minview tbody td { padding: 6px 0; }
+
+            body.minview tbody td {
+                padding: 6px 0;
+            }
 
 
             /* stack title/last-updated */
@@ -413,8 +424,9 @@
                     <label class="pill"><input type="checkbox" id="auto-refresh" /> Auto-refresh</label>
                     <label class="pill">Every <input id="refresh-seconds" type="number" min="10" step="5" value="60" />
                         s</label>
-                    <label class="pill"><input type="checkbox" id="min-view" /> Minimum view</label>
-
+                    <button class="btn secondary" id="min-view-btn" aria-pressed="false" title="Toggle compact view">
+                        Minimum view
+                    </button>
                     <button class="btn" id="refresh-btn">Refresh now</button>
                 </div>
                 <div id="note" class="small" style="margin-top:8px;"></div>

@@ -40,6 +40,8 @@ const autoRefreshCb = document.getElementById("auto-refresh");
 const refreshSeconds = document.getElementById("refresh-seconds");
 const refreshEveryLabel = document.getElementById("refresh-every");
 const minViewCb = document.getElementById("min-view");
+const minViewBtn = document.getElementById("min-view-btn");
+
 
 
 /* Helpers */
@@ -47,17 +49,41 @@ const fmtMoney = n => Number(n || 0).toLocaleString(undefined, { style: "currenc
 const safeText = s => (s == null ? "" : String(s));
 
 function applyMinViewClass() {
-  const on = !!minViewCb?.checked;
-  document.body.classList.toggle("minview", on);
-  try { localStorage.setItem("minView", on ? "1" : "0"); } catch (_) {}
+    const on = !!minViewCb?.checked;
+    document.body.classList.toggle("minview", on);
+    try { localStorage.setItem("minView", on ? "1" : "0"); } catch (_) { }
 }
 
 if (minViewCb) {
-  // restore previous choice
-  try { minViewCb.checked = localStorage.getItem("minView") === "1"; } catch (_) {}
-  applyMinViewClass();
-  minViewCb.addEventListener("change", applyMinViewClass);
+    // restore previous choice
+    try { minViewCb.checked = localStorage.getItem("minView") === "1"; } catch (_) { }
+    applyMinViewClass();
+    minViewCb.addEventListener("change", applyMinViewClass);
 }
+
+function setMinView(on) {
+    document.body.classList.toggle("minview", !!on);
+    if (minViewBtn) {
+        minViewBtn.setAttribute("aria-pressed", on ? "true" : "false");
+        minViewBtn.textContent = on ? "Full view" : "Minimum view";
+    }
+    try { localStorage.setItem("minView", on ? "1" : "0"); } catch (_) { }
+}
+
+(function initMinView() {
+    if (!minViewBtn) return;
+    // restore last choice
+    let saved = false;
+    try { saved = localStorage.getItem("minView") === "1"; } catch (_) { }
+    setMinView(saved);
+
+    // toggle on click
+    minViewBtn.addEventListener("click", () => {
+        const on = !document.body.classList.contains("minview");
+        setMinView(on);
+    });
+})();
+
 
 /* Try to parse a numeric value that might be:
    - number
@@ -79,44 +105,44 @@ const timeShort = d => (d ? d.toLocaleString() : "–");
 
 /* Field mapper with robust fallbacks */
 function mapItem(raw) {
-  const title = raw.name || `Item ${raw.id ?? ""}`;
-  const lot   = raw.number != null ? String(raw.number) : "";
-  const image = Array.isArray(raw.pictures) && raw.pictures[0]?.url ? raw.pictures[0].url : null;
+    const title = raw.name || `Item ${raw.id ?? ""}`;
+    const lot = raw.number != null ? String(raw.number) : "";
+    const image = Array.isArray(raw.pictures) && raw.pictures[0]?.url ? raw.pictures[0].url : null;
 
-  const currentPrice = raw.last_bid?.amount ? Number(String(raw.last_bid.amount).replace(/[^0-9.\-]/g, "")) : 0;
-  const bidsCount = Number(raw.bid_count ?? 0);
-  const bidder = raw.last_bid?.bidder?.display_name || "";
+    const currentPrice = raw.last_bid?.amount ? Number(String(raw.last_bid.amount).replace(/[^0-9.\-]/g, "")) : 0;
+    const bidsCount = Number(raw.bid_count ?? 0);
+    const bidder = raw.last_bid?.bidder?.display_name || "";
 
-  const endsAt = raw.end_at ? new Date(raw.end_at.replace(" ", "T") + (raw.end_at.endsWith("Z") ? "" : "Z")) : null;
+    const endsAt = raw.end_at ? new Date(raw.end_at.replace(" ", "T") + (raw.end_at.endsWith("Z") ? "" : "Z")) : null;
 
-  let status = "open";
-  if (raw.paused) status = "paused";
-  if (raw.ended) status = "closed";
-  if (!raw.started) status = "pending";
+    let status = "open";
+    if (raw.paused) status = "paused";
+    if (raw.ended) status = "closed";
+    if (!raw.started) status = "pending";
 
-  // NEW: Bid Increment
-  const bidIncrement = raw.bid_increment != null ? Number(raw.bid_increment) : null;
+    // NEW: Bid Increment
+    const bidIncrement = raw.bid_increment != null ? Number(raw.bid_increment) : null;
 
-  const nextMinBid = raw.minimum_bid != null ? Number(raw.minimum_bid) : null;
-  const startBid   = raw.start_bid != null ? Number(raw.start_bid) : null;
-  const link       = raw.url || (raw.id ? `https://givebutter.com/auctions/${raw.auction_id}/items/${raw.id}` : "");
+    const nextMinBid = raw.minimum_bid != null ? Number(raw.minimum_bid) : null;
+    const startBid = raw.start_bid != null ? Number(raw.start_bid) : null;
+    const link = raw.url || (raw.id ? `https://givebutter.com/auctions/${raw.auction_id}/items/${raw.id}` : "");
 
-  return {
-    id: raw.id,
-    title,
-    lot,
-    image,
-    currentPrice,
-    bidIncrement,
-    bidsCount,
-    bidder,
-    status,
-    endsAt,
-    nextMinBid,
-    startBid,
-    link,
-    raw
-  };
+    return {
+        id: raw.id,
+        title,
+        lot,
+        image,
+        currentPrice,
+        bidIncrement,
+        bidsCount,
+        bidder,
+        status,
+        endsAt,
+        nextMinBid,
+        startBid,
+        link,
+        raw
+    };
 }
 
 
@@ -148,8 +174,8 @@ function render(items) {
         tbody.innerHTML = `<tr><td colspan="9" class="center muted">No items match your filters.</td></tr>`;
     } else {
         tbody.innerHTML = sorted.map(item => {
-  const statusClass = item.status === "open" ? "status-open" : item.status === "closed" ? "status-closed" : "";
-  return `
+            const statusClass = item.status === "open" ? "status-open" : item.status === "closed" ? "status-closed" : "";
+            return `
     <tr>
       <td data-label="Item">
         <div style="display:flex;flex-direction:column;gap:4px">
@@ -167,7 +193,7 @@ function render(items) {
       <td data-label="Status"><span class="status-chip ${statusClass}">${escapeHtml(item.status || "—")}</span></td>
     </tr>
   `;
-}).join("");
+        }).join("");
 
     }
 
