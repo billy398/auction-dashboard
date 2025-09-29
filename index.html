@@ -1,186 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <title>Givebutter Auction Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg:#0b0f19; --card:#131a2a; --muted:#9fb0d1; --text:#e6edf7; --accent:#5ac8fa; --accent2:#a78bfa;
-      --good:#34d399; --bad:#f87171; --warn:#fbbf24; --table-stripe:rgba(255,255,255,0.03); --border:rgba(255,255,255,0.08);
-    }
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
-    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-    h1{font-size:22px;margin:0}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
-    .toolbar{gap:10px;align-items:stretch}
-    .toolbar .card{flex:1;min-width:180px}
-    .kpi{font-size:12px;color:var(--muted)}
-    .kpi .value{display:block;font-size:20px;color:var(--text);margin-top:4px}
-    .controls{margin-top:14px;gap:8px}
-    input[type="text"], input[type="number"]{background:#0f1524;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none}
-    input[type="text"]{flex:1;min-width:140px} input[type="number"]{width:92px}
-    .btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#08111c;font-weight:700;padding:10px 14px;border-radius:10px;cursor:pointer}
-    .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
-    table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-    thead th{background:#0f1524;color:var(--muted);font-size:12px;text-align:left;padding:10px;border-bottom:1px solid var(--border);user-select:none;cursor:pointer}
-    tbody td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle}
-    tbody tr:nth-child(odd){background:var(--table-stripe)}
-    .thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;background:#0f1524;border:1px solid var(--border)}
-    .muted{color:var(--muted);font-size:12px}
-    .price{font-variant-numeric:tabular-nums}
-    .status-chip{font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);display:inline-block;background:#10172a;color:var(--muted)}
-    .status-open{color:var(--good);border-color:rgba(52,211,153,.35)}
-    .status-closed{color:var(--bad);border-color:rgba(248,113,113,.35)}
-    .footer{margin-top:18px}
-    .error{color:var(--bad);padding:10px 12px;border:1px solid rgba(248,113,113,.35);border-radius:10px;background:rgba(248,113,113,.08)}
-    .warn{color:var(--warn);padding:10px 12px;border:1px solid rgba(251,191,36,.35);border-radius:10px;background:rgba(251,191,36,.08)}
-    .pill{padding:3px 8px;border-radius:999px;background:#0f1524;border:1px solid var(--border);font-size:12px;color:var(--muted)}
-    .small{font-size:12px;color:var(--muted)} .center{text-align:center} .nowrap{white-space:nowrap}
-    .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .right{margin-left:auto}
-    .link{color:var(--accent);text-decoration:none} .link:hover{text-decoration:underline}
+    <meta charset="UTF-8" />
+    <title>Givebutter Auction Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --card: #131a2a;
+            --muted: #9fb0d1;
+            --text: #e6edf7;
+            --accent: #5ac8fa;
+            --accent2: #a78bfa;
+            --good: #34d399;
+            --bad: #f87171;
+            --warn: #fbbf24;
+            --table-stripe: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+        }
 
-    /* ---- Mobile responsiveness ---- */
-    .table-scroller{overflow-x:auto} /* fallback if someone forces table on phone */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial
+        }
 
-    @media (max-width: 760px) {
-      /* stack title/last-updated */
-      .row:first-child { gap: 6px }
-      h1 { font-size: 20px }
+        .wrap {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 16px
+        }
 
-      /* Compact KPI font a bit */
-      .kpi .value{font-size:18px}
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center
+        }
 
-      /* Toolbar wraps nicely */
-      .controls .flex { gap:8px }
-      .pill { font-size: 11px }
+        h1 {
+            font-size: 22px;
+            margin: 0
+        }
 
-      /* Turn table into card-like stacked rows */
-      table, thead, tbody, th, td, tr { display: block; }
-      thead { 
-        /* hide the header row but keep for a11y/sort tapping if needed */
-        position: absolute; 
-        top: -9999px; 
-        left: -9999px; 
-      }
-      table { border: none; }
-      tbody tr {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        margin: 10px 0;
-        padding: 8px 10px;
-      }
-      tbody td {
-        border: none;
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 10px;
-        padding: 8px 0;
-      }
-      tbody td::before {
-        content: attr(data-label);
-        color: var(--muted);
-        font-size: 12px;
-        flex: 0 0 48%;
-        max-width: 48%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      tbody td > * { max-width: 50%; }
-      tbody tr:nth-child(odd){ background: var(--card) } /* no zebra on cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px
+        }
 
-      /* Images full width on their line */
-      td[data-label="Image"] { align-items: center; }
-      td[data-label="Image"] .thumb { width: 100%; height: auto; max-height: 220px; }
+        .toolbar {
+            gap: 10px;
+            align-items: stretch
+        }
 
-      /* Smaller buttons */
-      .btn { padding: 9px 12px }
+        .toolbar .card {
+            flex: 1;
+            min-width: 180px
+        }
 
-      /* Footer stacks */
-      .footer .card { flex: 1 1 100% }
-    }
-  </style>
+        .kpi {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .kpi .value {
+            display: block;
+            font-size: 20px;
+            color: var(--text);
+            margin-top: 4px
+        }
+
+        .controls {
+            margin-top: 14px;
+            gap: 8px
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            background: #0f1524;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            outline: none
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 140px
+        }
+
+        input[type="number"] {
+            width: 92px
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border: none;
+            color: #08111c;
+            font-weight: 700;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border)
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden
+        }
+
+        thead th {
+            background: #0f1524;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            user-select: none;
+            cursor: pointer
+        }
+
+        tbody td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle
+        }
+
+        tbody tr:nth-child(odd) {
+            background: var(--table-stripe)
+        }
+
+        .thumb {
+            width: 56px;
+            height: 56px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #0f1524;
+            border: 1px solid var(--border)
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .price {
+            font-variant-numeric: tabular-nums
+        }
+
+        .status-chip {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            display: inline-block;
+            background: #10172a;
+            color: var(--muted)
+        }
+
+        .status-open {
+            color: var(--good);
+            border-color: rgba(52, 211, 153, .35)
+        }
+
+        .status-closed {
+            color: var(--bad);
+            border-color: rgba(248, 113, 113, .35)
+        }
+
+        .footer {
+            margin-top: 18px
+        }
+
+        .error {
+            color: var(--bad);
+            padding: 10px 12px;
+            border: 1px solid rgba(248, 113, 113, .35);
+            border-radius: 10px;
+            background: rgba(248, 113, 113, .08)
+        }
+
+        .warn {
+            color: var(--warn);
+            padding: 10px 12px;
+            border: 1px solid rgba(251, 191, 36, .35);
+            border-radius: 10px;
+            background: rgba(251, 191, 36, .08)
+        }
+
+        .pill {
+            padding: 3px 8px;
+            border-radius: 999px;
+            background: #0f1524;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .small {
+            font-size: 12px;
+            color: var(--muted)
+        }
+
+        .center {
+            text-align: center
+        }
+
+        .nowrap {
+            white-space: nowrap
+        }
+
+        .flex {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .right {
+            margin-left: auto
+        }
+
+        .link {
+            color: var(--accent);
+            text-decoration: none
+        }
+
+        .link:hover {
+            text-decoration: underline
+        }
+
+        /* ---- Mobile responsiveness ---- */
+        .table-scroller {
+            overflow-x: auto
+        }
+
+        /* fallback if someone forces table on phone */
+
+        @media (max-width: 760px) {
+
+            /* stack title/last-updated */
+            .row:first-child {
+                gap: 6px
+            }
+
+            h1 {
+                font-size: 20px
+            }
+
+            /* Compact KPI font a bit */
+            .kpi .value {
+                font-size: 18px
+            }
+
+            /* Toolbar wraps nicely */
+            .controls .flex {
+                gap: 8px
+            }
+
+            .pill {
+                font-size: 11px
+            }
+
+            /* Turn table into card-like stacked rows */
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            thead {
+                /* hide the header row but keep for a11y/sort tapping if needed */
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            table {
+                border: none;
+            }
+
+            tbody tr {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                margin: 10px 0;
+                padding: 8px 10px;
+            }
+
+            tbody td {
+                border: none;
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                gap: 10px;
+                padding: 8px 0;
+            }
+
+            tbody td::before {
+                content: attr(data-label);
+                color: var(--muted);
+                font-size: 12px;
+                flex: 0 0 48%;
+                max-width: 48%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            tbody td>* {
+                max-width: 50%;
+            }
+
+            tbody tr:nth-child(odd) {
+                background: var(--card)
+            }
+
+            /* no zebra on cards */
+
+            /* Images full width on their line */
+            td[data-label="Image"] {
+                align-items: center;
+            }
+
+            td[data-label="Image"] .thumb {
+                width: 100%;
+                height: auto;
+                max-height: 220px;
+            }
+
+            /* Smaller buttons */
+            .btn {
+                padding: 9px 12px
+            }
+
+            /* Footer stacks */
+            .footer .card {
+                flex: 1 1 100%
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="row" style="justify-content:space-between;gap:8px;">
-      <h1>Givebutter Auction Dashboard</h1>
-      <div class="small">Last update: <span id="last-updated">–</span> • Auto-refresh: <span id="refresh-every">60s</span></div>
-    </div>
-
-    <div class="row toolbar">
-      <div class="card"><div class="kpi">Items</div><span class="value" id="kpi-items">0</span></div>
-      <div class="card"><div class="kpi">Items w/ Bids</div><span class="value" id="kpi-with-bids">0</span></div>
-      <div class="card"><div class="kpi">Total of High Bids</div><span class="value price" id="kpi-total-bids">$0.00</span></div>
-      <div class="card"><div class="kpi">Highest Current Bid</div><span class="value price" id="kpi-highest-bid">$0.00</span></div>
-      <div class="card"><div class="kpi">Soonest Ending</div><span class="value" id="kpi-soonest">–</span></div>
-      <div class="card"><div class="kpi">Average Current Bid</div><span class="value price" id="kpi-avg-bid">$0.00</span></div>
-    </div>
-
-    <div class="row controls">
-      <div class="card" style="flex:2;">
-        <div class="flex">
-          <input id="search" type="text" placeholder="Search items, bidders, lot numbers…" />
-          <button class="btn secondary" id="clear-search">Clear</button>
-          <label class="pill"><input type="checkbox" id="only-with-bids" /> Only with bids</label>
-          <label class="pill"><input type="checkbox" id="auto-refresh" /> Auto-refresh</label>
-          <label class="pill">Every <input id="refresh-seconds" type="number" min="10" step="5" value="60" /> s</label>
-          <button class="btn" id="refresh-btn">Refresh now</button>
+    <div class="wrap">
+        <div class="row" style="justify-content:space-between;gap:8px;">
+            <h1>Givebutter Auction Dashboard</h1>
+            <div class="small">Last update: <span id="last-updated">–</span> • Auto-refresh: <span
+                    id="refresh-every">60s</span></div>
         </div>
-        <div id="note" class="small" style="margin-top:8px;"></div>
-      </div>
-    </div>
 
-    <div id="alert" style="margin-top:12px;"></div>
-
-    <div class="card table-scroller" style="margin-top:12px">
-      <table id="items-table">
-        <thead>
-          <tr>
-            <th data-sort="title">Item</th>
-            <th data-sort="lot">Lot</th>
-            <th>Image</th>
-            <th data-sort="price">Current Price</th>
-            <th data-sort="bids">Bids</th>
-            <th data-sort="bidder">Leading Bidder</th>
-            <th data-sort="ends">Ends</th>
-            <th data-sort="status">Status</th>
-            <th>Buy Now</th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-          <tr><td colspan="9" class="center muted">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="footer row">
-      <div class="card" style="flex:1">
-        <div class="kpi">Summary</div>
-        <div style="margin-top:6px;line-height:1.8;">
-          <div>Total items: <span id="sum-items">0</span></div>
-          <div>Items with bids: <span id="sum-with-bids">0</span></div>
-          <div>Total of current high bids: <span class="price" id="sum-total">$0.00</span></div>
-          <div>Average current bid (items w/ bids): <span class="price" id="sum-avg">$0.00</span></div>
-          <div>Max current bid: <span class="price" id="sum-max">$0.00</span> <span id="sum-max-item" class="muted"></span></div>
+        <div class="row toolbar">
+            <div class="card">
+                <div class="kpi">Items</div><span class="value" id="kpi-items">0</span>
+            </div>
+            <div class="card">
+                <div class="kpi">Items w/ Bids</div><span class="value" id="kpi-with-bids">0</span>
+            </div>
+            <div class="card">
+                <div class="kpi">Total of High Bids</div><span class="value price" id="kpi-total-bids">$0.00</span>
+            </div>
+            <div class="card">
+                <div class="kpi">Highest Current Bid</div><span class="value price" id="kpi-highest-bid">$0.00</span>
+            </div>
+            <div class="card">
+                <div class="kpi">Soonest Ending</div><span class="value" id="kpi-soonest">–</span>
+            </div>
+            <div class="card">
+                <div class="kpi">Average Current Bid</div><span class="value price" id="kpi-avg-bid">$0.00</span>
+            </div>
         </div>
-      </div>
-      <div class="card" style="flex:1">
-        <div class="kpi">Tips</div>
-        <ul class="muted" style="margin:6px 0 0 18px;">
-          <li>Tap a row label to view values on phones.</li>
-          <li>Search filters by title, bidder, or lot.</li>
-          <li>This dashboard was made by Billy Linn</li>
-        </ul>
-      </div>
-    </div>
-  </div>
 
-  <script src="app.js"></script>
+        <div class="row controls">
+            <div class="card" style="flex:2;">
+                <div class="flex">
+                    <input id="search" type="text" placeholder="Search items, bidders, lot numbers…" />
+                    <button class="btn secondary" id="clear-search">Clear</button>
+                    <label class="pill"><input type="checkbox" id="only-with-bids" /> Only with bids</label>
+                    <label class="pill"><input type="checkbox" id="auto-refresh" /> Auto-refresh</label>
+                    <label class="pill">Every <input id="refresh-seconds" type="number" min="10" step="5" value="60" />
+                        s</label>
+                    <button class="btn" id="refresh-btn">Refresh now</button>
+                </div>
+                <div id="note" class="small" style="margin-top:8px;"></div>
+            </div>
+        </div>
+
+        <div id="alert" style="margin-top:12px;"></div>
+
+        <div class="card table-scroller" style="margin-top:12px">
+            <table id="items-table">
+                <thead>
+                    <tr>
+                        <th data-sort="title">Item</th>
+                        <th data-sort="lot">Lot</th>
+                        <th>Image</th>
+                        <th data-sort="price">Current Price</th>
+                        <th data-sort="increment">Bid Increment</th>
+                        <th data-sort="bids">Bids</th>
+                        <th data-sort="bidder">Leading Bidder</th>
+                        <th data-sort="ends">Ends</th>
+                        <th data-sort="status">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody">
+                    <tr>
+                        <td colspan="9" class="center muted">Loading…</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer row">
+            <div class="card" style="flex:1">
+                <div class="kpi">Summary</div>
+                <div style="margin-top:6px;line-height:1.8;">
+                    <div>Total items: <span id="sum-items">0</span></div>
+                    <div>Items with bids: <span id="sum-with-bids">0</span></div>
+                    <div>Total of current high bids: <span class="price" id="sum-total">$0.00</span></div>
+                    <div>Average current bid (items w/ bids): <span class="price" id="sum-avg">$0.00</span></div>
+                    <div>Max current bid: <span class="price" id="sum-max">$0.00</span> <span id="sum-max-item"
+                            class="muted"></span></div>
+                </div>
+            </div>
+            <div class="card" style="flex:1">
+                <div class="kpi">Tips</div>
+                <ul class="muted" style="margin:6px 0 0 18px;">
+                    <li>Tap a row label to view values on phones.</li>
+                    <li>Search filters by title, bidder, or lot.</li>
+                    <li>This dashboard was made by Billy Linn</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
+
 </html>
