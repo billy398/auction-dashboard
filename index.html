@@ -6,127 +6,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #0b0f19;
-      --card: #131a2a;
-      --muted: #9fb0d1;
-      --text: #e6edf7;
-      --accent: #5ac8fa;
-      --accent2: #a78bfa;
-      --good: #34d399;
-      --bad: #f87171;
-      --warn: #fbbf24;
-      --table-stripe: rgba(255,255,255,0.03);
-      --border: rgba(255,255,255,0.08);
+      --bg:#0b0f19; --card:#131a2a; --muted:#9fb0d1; --text:#e6edf7; --accent:#5ac8fa; --accent2:#a78bfa;
+      --good:#34d399; --bad:#f87171; --warn:#fbbf24; --table-stripe:rgba(255,255,255,0.03); --border:rgba(255,255,255,0.08);
     }
-    html, body {
-      margin: 0; padding: 0; background: var(--bg); color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-    }
-    .wrap { max-width: 1200px; margin: 24px auto; padding: 0 16px; }
-    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    h1 { font-size: 22px; margin: 0; }
-    .card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 14px; padding: 14px;
-    }
-    .toolbar { gap: 10px; align-items: stretch; }
-    .toolbar .card { flex: 1; min-width: 180px; }
-    .kpi { font-size: 12px; color: var(--muted); }
-    .kpi .value { display: block; font-size: 20px; color: var(--text); margin-top: 4px; }
-    .controls { margin-top: 14px; gap: 8px; }
-    input[type="text"], select {
-      background: #0f1524; color: var(--text); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 12px; outline: none; width: 100%;
-    }
-    input[type="number"] { width: 100px; }
-    .btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; color: #08111c; font-weight: 700; padding: 10px 14px; border-radius: 10px; cursor: pointer;
-    }
-    .btn.secondary {
-      background: transparent; color: var(--text); border: 1px solid var(--border);
-    }
-    .tablewrap { margin-top: 16px; }
-    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    thead th {
-      background: #0f1524; color: var(--muted); font-size: 12px; text-align: left;
-      padding: 10px; border-bottom: 1px solid var(--border); user-select: none; cursor: pointer;
-    }
-    tbody td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    tbody tr:nth-child(odd) { background: var(--table-stripe); }
-    .thumb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: #0f1524; border: 1px solid var(--border); }
-    .muted { color: var(--muted); font-size: 12px; }
-    .price { font-variant-numeric: tabular-nums; }
-    .status-chip {
-      font-size: 11px; padding: 4px 8px; border-radius: 999px; border: 1px solid var(--border);
-      display: inline-block; background: #10172a; color: var(--muted);
-    }
-    .status-open { color: var(--good); border-color: rgba(52, 211, 153, 0.35); }
-    .status-closed { color: var(--bad); border-color: rgba(248, 113, 113, 0.35); }
-    .footer { margin-top: 18px; }
-    .error { color: var(--bad); padding: 10px 12px; border: 1px solid rgba(248,113,113,0.35); border-radius: 10px; background: rgba(248,113,113,0.08); }
-    .warn  { color: var(--warn); padding: 10px 12px; border: 1px solid rgba(251,191,36,0.35); border-radius: 10px; background: rgba(251,191,36,0.08); }
-    .pill { padding: 3px 8px; border-radius: 999px; background: #0f1524; border: 1px solid var(--border); font-size: 12px; color: var(--muted); }
-    .right { margin-left: auto; }
-    .nowrap { white-space: nowrap; }
-    .flex { display: flex; gap: 10px; align-items: center; }
-    .small { font-size: 12px; color: var(--muted); }
-    .link { color: var(--accent); text-decoration: none; }
-    .link:hover { text-decoration: underline; }
-    .center { text-align: center; }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    h1{font-size:22px;margin:0}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px}
+    .toolbar{gap:10px;align-items:stretch}
+    .toolbar .card{flex:1;min-width:180px}
+    .kpi{font-size:12px;color:var(--muted)}
+    .kpi .value{display:block;font-size:20px;color:var(--text);margin-top:4px}
+    .controls{margin-top:14px;gap:8px}
+    input[type="text"], input[type="number"]{background:#0f1524;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px;outline:none}
+    input[type="text"]{width:100%} input[type="number"]{width:100px}
+    .btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;color:#08111c;font-weight:700;padding:10px 14px;border-radius:10px;cursor:pointer}
+    .btn.secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    thead th{background:#0f1524;color:var(--muted);font-size:12px;text-align:left;padding:10px;border-bottom:1px solid var(--border);user-select:none;cursor:pointer}
+    tbody td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle}
+    tbody tr:nth-child(odd){background:var(--table-stripe)}
+    .thumb{width:56px;height:56px;border-radius:10px;object-fit:cover;background:#0f1524;border:1px solid var(--border)}
+    .muted{color:var(--muted);font-size:12px}
+    .price{font-variant-numeric:tabular-nums}
+    .status-chip{font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--border);display:inline-block;background:#10172a;color:var(--muted)}
+    .status-open{color:var(--good);border-color:rgba(52,211,153,.35)}
+    .status-closed{color:var(--bad);border-color:rgba(248,113,113,.35)}
+    .footer{margin-top:18px}
+    .error{color:var(--bad);padding:10px 12px;border:1px solid rgba(248,113,113,.35);border-radius:10px;background:rgba(248,113,113,.08)}
+    .warn{color:var(--warn);padding:10px 12px;border:1px solid rgba(251,191,36,.35);border-radius:10px;background:rgba(251,191,36,.08)}
+    .pill{padding:3px 8px;border-radius:999px;background:#0f1524;border:1px solid var(--border);font-size:12px;color:var(--muted)}
+    .small{font-size:12px;color:var(--muted)} .center{text-align:center} .nowrap{white-space:nowrap}
+    .flex{display:flex;gap:10px;align-items:center}
+    .right{margin-left:auto}
+    .link{color:var(--accent);text-decoration:none} .link:hover{text-decoration:underline}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="row" style="justify-content: space-between; gap: 8px;">
+    <div class="row" style="justify-content:space-between;gap:8px;">
       <h1>Givebutter Auction Dashboard</h1>
       <div class="small">Last update: <span id="last-updated">–</span> • Auto-refresh: <span id="refresh-every">60s</span></div>
     </div>
 
     <div class="row toolbar">
-      <div class="card">
-        <div class="kpi">Items</div>
-        <span class="value" id="kpi-items">0</span>
-      </div>
-      <div class="card">
-        <div class="kpi">Items w/ Bids</div>
-        <span class="value" id="kpi-with-bids">0</span>
-      </div>
-      <div class="card">
-        <div class="kpi">Total of High Bids</div>
-        <span class="value price" id="kpi-total-bids">$0.00</span>
-      </div>
-      <div class="card">
-        <div class="kpi">Highest Current Bid</div>
-        <span class="value price" id="kpi-highest-bid">$0.00</span>
-      </div>
-      <div class="card">
-        <div class="kpi">Soonest Ending</div>
-        <span class="value" id="kpi-soonest">–</span>
-      </div>
-      <div class="card">
-        <div class="kpi">Average Current Bid</div>
-        <span class="value price" id="kpi-avg-bid">$0.00</span>
-      </div>
+      <div class="card"><div class="kpi">Items</div><span class="value" id="kpi-items">0</span></div>
+      <div class="card"><div class="kpi">Items w/ Bids</div><span class="value" id="kpi-with-bids">0</span></div>
+      <div class="card"><div class="kpi">Total of High Bids</div><span class="value price" id="kpi-total-bids">$0.00</span></div>
+      <div class="card"><div class="kpi">Highest Current Bid</div><span class="value price" id="kpi-highest-bid">$0.00</span></div>
+      <div class="card"><div class="kpi">Soonest Ending</div><span class="value" id="kpi-soonest">–</span></div>
+      <div class="card"><div class="kpi">Average Current Bid</div><span class="value price" id="kpi-avg-bid">$0.00</span></div>
     </div>
 
     <div class="row controls">
-      <div class="card" style="flex: 2;">
+      <div class="card" style="flex:2;">
         <div class="flex">
           <input id="search" type="text" placeholder="Search items, bidders, lot numbers…" />
-          <button class="btn secondary" id="clear-search" title="Clear search">Clear</button>
+          <button class="btn secondary" id="clear-search">Clear</button>
           <label class="pill"><input type="checkbox" id="only-with-bids" /> Only with bids</label>
           <label class="pill"><input type="checkbox" id="auto-refresh" checked /> Auto-refresh</label>
           <label class="pill">Every <input id="refresh-seconds" type="number" min="10" step="5" value="60" /> s</label>
           <button class="btn" id="refresh-btn">Refresh now</button>
         </div>
-        <div id="note" class="small" style="margin-top:8px;color:var(--muted)"></div>
+        <div id="note" class="small" style="margin-top:8px;"></div>
       </div>
     </div>
 
-    <div id="alert" style="margin-top: 12px;"></div>
+    <div id="alert" style="margin-top:12px;"></div>
 
-    <div class="tablewrap card">
+    <div class="card" style="margin-top:12px">
       <table id="items-table">
         <thead>
           <tr>
@@ -150,7 +99,7 @@
     <div class="footer row">
       <div class="card" style="flex:1">
         <div class="kpi">Summary</div>
-        <div style="margin-top:6px; line-height: 1.8;">
+        <div style="margin-top:6px;line-height:1.8;">
           <div>Total items: <span id="sum-items">0</span></div>
           <div>Items with bids: <span id="sum-with-bids">0</span></div>
           <div>Total of current high bids: <span class="price" id="sum-total">$0.00</span></div>
@@ -163,287 +112,12 @@
         <ul class="muted" style="margin:6px 0 0 18px;">
           <li>Click a column header to sort.</li>
           <li>Use search to filter by title, bidder, or lot.</li>
-          <li>Check "Only with bids" to hide items without bids.</li>
+          <li>Open DevTools → Console to see debug logs.</li>
         </ul>
       </div>
     </div>
   </div>
 
-  <script>
-    // === Config ===
-    const BASE_URL = "/api/auctions/38788/items";
-    const BASE_QS  = "?filters=%7B%22categories%22%3A%5B%5D%2C%22status%22%3Anull%2C%22minPrice%22%3Anull%2C%22maxPrice%22%3Anull%2C%22allItems%22%3Afalse%7D&sortBy=ending_soonest&searchBy=&isFavorited=false&isMyBids=false&perPage=28";
-
-    // === State ===
-    let allItems = [];
-    let filtered = [];
-    let sort = { key: "ends", dir: "asc" }; // default sort by soonest ending
-
-    // === DOM ===
-    const tbody = document.getElementById("tbody");
-    const kpiItems = document.getElementById("kpi-items");
-    const kpiWithBids = document.getElementById("kpi-with-bids");
-    const kpiTotalBids = document.getElementById("kpi-total-bids");
-    const kpiHighestBid = document.getElementById("kpi-highest-bid");
-    const kpiSoonest = document.getElementById("kpi-soonest");
-    const kpiAvgBid = document.getElementById("kpi-avg-bid");
-
-    const sumItems = document.getElementById("sum-items");
-    const sumWithBids = document.getElementById("sum-with-bids");
-    const sumTotal = document.getElementById("sum-total");
-    const sumAvg = document.getElementById("sum-avg");
-    const sumMax = document.getElementById("sum-max");
-    const sumMaxItem = document.getElementById("sum-max-item");
-
-    const lastUpdated = document.getElementById("last-updated");
-    const note = document.getElementById("note");
-    const alertBox = document.getElementById("alert");
-
-    const searchInput = document.getElementById("search");
-    const clearSearchBtn = document.getElementById("clear-search");
-    const onlyWithBidsCb = document.getElementById("only-with-bids");
-    const refreshBtn = document.getElementById("refresh-btn");
-    const autoRefreshCb = document.getElementById("auto-refresh");
-    const refreshSeconds = document.getElementById("refresh-seconds");
-    const refreshEveryLabel = document.getElementById("refresh-every");
-
-    // === Helpers ===
-    const fmtMoney = (n) => {
-      const val = Number(n || 0);
-      return val.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 2 });
-    };
-    const safeText = (s) => (s == null ? "" : String(s));
-    const parseNumber = (v) => {
-      if (typeof v === "number") return v;
-      if (typeof v === "string") {
-        // remove $ and commas
-        return Number(v.replace(/[^0-9.\-]/g, "")) || 0;
-      }
-      return 0;
-    };
-    const parseDate = (s) => s ? new Date(s) : null;
-    const timeShort = (d) => d ? d.toLocaleString() : "–";
-
-    // Extract fields with fallbacks (API variations handled gracefully)
-    function mapItem(raw) {
-      const a = raw?.attributes || {};
-      const r = raw?.relationships || {};
-
-      // Try common attribute names; adjust as needed if your payload differs
-      const title = a.title || a.name || a.item_title || a.itemName || `Item ${raw?.id ?? ""}`;
-      const lot = a.lot_number || a.lot || a.sku || a.code || "";
-      const image = a.image_url || a.imageUrl || a.photo_url || a.photoUrl || a.thumbnail || null;
-
-      const buyNow = a.buy_now_price || a.buyNowPrice || a.buy_now || null;
-
-      // Bid information
-      const currentPrice = a.current_bid_amount || a.currentPrice || a.current_price || a.price || a.min_bid || 0;
-      const bidsCount = a.bids_count || a.bidsCount || a.num_bids || 0;
-
-      // Leading bidder name (varies by API; attempt graceful extraction)
-      const bidder =
-        a.leading_bidder_name ||
-        a.current_bidder_name ||
-        a.bidder_name ||
-        r?.current_bid?.data?.attributes?.name ||
-        r?.current_bidder?.data?.attributes?.name ||
-        a.high_bidder ||
-        "";
-
-      // Status & times
-      const status = (a.status || "").toString().toLowerCase();
-      const endsAt = a.ends_at || a.end_time || a.ends || a.close_at || null;
-
-      return {
-        id: raw?.id,
-        title: safeText(title),
-        lot: safeText(lot),
-        image,
-        currentPrice: parseNumber(currentPrice),
-        bidsCount: Number(bidsCount || 0),
-        bidder: safeText(bidder),
-        status: status || (endsAt && new Date(endsAt) < new Date() ? "closed" : "open"),
-        endsAt: endsAt ? new Date(endsAt) : null,
-        raw
-      };
-    }
-
-    function render(items) {
-      // Sorting
-      const sorted = [...items].sort((a, b) => {
-        const dir = sort.dir === "asc" ? 1 : -1;
-        switch (sort.key) {
-          case "title": return a.title.localeCompare(b.title) * dir;
-          case "lot": return a.lot.localeCompare(b.lot, undefined, { numeric: true }) * dir;
-          case "price": return (a.currentPrice - b.currentPrice) * dir;
-          case "bids": return (a.bidsCount - b.bidsCount) * dir;
-          case "bidder": return a.bidder.localeCompare(b.bidder) * dir;
-          case "ends": {
-            const at = a.endsAt ? a.endsAt.getTime() : Infinity;
-            const bt = b.endsAt ? b.endsAt.getTime() : Infinity;
-            return (at - bt) * dir;
-          }
-          case "status": return a.status.localeCompare(b.status) * dir;
-          default: return 0;
-        }
-      });
-
-      // Body
-      if (sorted.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" class="center muted">No items match your filters.</td></tr>`;
-      } else {
-        tbody.innerHTML = sorted.map(item => {
-          const statusClass = item.status === "open" ? "status-open" : item.status === "closed" ? "status-closed" : "";
-          return `
-            <tr>
-              <td>
-                <div style="display:flex;flex-direction:column;gap:4px">
-                  <div>${escapeHtml(item.title)}</div>
-                  ${item.id ? `<a class="link muted" href="https://givebutter.com/auctions/38788/items/${item.id}" target="_blank" rel="noopener">Open item ↗</a>` : ""}
-                </div>
-              </td>
-              <td class="nowrap">${escapeHtml(item.lot || "")}</td>
-              <td>${item.image ? `<img class="thumb" src="${escapeAttr(item.image)}" alt="item image">` : `<span class="muted">—</span>`}</td>
-              <td class="price">${fmtMoney(item.currentPrice)}</td>
-              <td class="nowrap">${item.bidsCount}</td>
-              <td>${item.bidder ? escapeHtml(item.bidder) : `<span class="muted">—</span>`}</td>
-              <td class="nowrap">${item.endsAt ? escapeHtml(timeShort(item.endsAt)) : `<span class="muted">—</span>`}</td>
-              <td><span class="status-chip ${statusClass}">${escapeHtml(item.status || "—")}</span></td>
-              <td class="price">${fmtMoney(item.raw?.attributes?.buy_now_price || item.raw?.attributes?.buyNowPrice || 0)}</td>
-            </tr>
-          `;
-        }).join("");
-      }
-
-      // KPIs & Summary
-      const count = items.length;
-      const withBids = items.filter(i => i.currentPrice > 0);
-      const total = withBids.reduce((s, i) => s + i.currentPrice, 0);
-      const maxItem = withBids.reduce((max, i) => i.currentPrice > (max?.currentPrice || 0) ? i : max, null);
-      const avg = withBids.length ? (total / withBids.length) : 0;
-      const soonest = items
-        .filter(i => i.endsAt && i.status !== "closed")
-        .sort((a, b) => a.endsAt - b.endsAt)[0]?.endsAt || null;
-
-      kpiItems.textContent = count;
-      kpiWithBids.textContent = withBids.length;
-      kpiTotalBids.textContent = fmtMoney(total);
-      kpiHighestBid.textContent = fmtMoney(maxItem?.currentPrice || 0);
-      kpiSoonest.textContent = soonest ? timeShort(soonest) : "–";
-      kpiAvgBid.textContent = fmtMoney(avg);
-
-      sumItems.textContent = count;
-      sumWithBids.textContent = withBids.length;
-      sumTotal.textContent = fmtMoney(total);
-      sumAvg.textContent = fmtMoney(avg);
-      sumMax.textContent = fmtMoney(maxItem?.currentPrice || 0);
-      sumMaxItem.textContent = maxItem ? ` (${maxItem.title})` : "";
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    }
-    function escapeAttr(s) {
-      return escapeHtml(s).replace(/"/g, '&quot;');
-    }
-
-    function applyFilters() {
-      const q = searchInput.value.trim().toLowerCase();
-      const onlyBids = onlyWithBidsCb.checked;
-      filtered = allItems.filter(i => {
-        if (onlyBids && !(i.currentPrice > 0)) return false;
-        if (!q) return true;
-        const hay = `${i.title} ${i.bidder} ${i.lot}`.toLowerCase();
-        return hay.includes(q);
-      });
-      render(filtered);
-    }
-
-    // Column sorting
-    document.querySelectorAll("thead th[data-sort]").forEach(th => {
-      th.addEventListener("click", () => {
-        const key = th.dataset.sort;
-        if (sort.key === key) {
-          sort.dir = sort.dir === "asc" ? "desc" : "asc";
-        } else {
-          sort.key = key;
-          sort.dir = key === "title" || key === "bidder" || key === "status" ? "asc" : "desc";
-        }
-        render(filtered);
-      });
-    });
-
-    // Fetch pages until empty (or up to a safe cap)
-    async function fetchAllPages() {
-      const cap = 50; // safety cap to avoid endless loops
-      let page = 1;
-      const items = [];
-      while (page <= cap) {
-        const url = `${BASE_URL}${BASE_QS}&page=${page}`;
-        const data = await fetchJson(url);
-        const arr = Array.isArray(data?.data) ? data.data : [];
-        if (arr.length === 0) break;
-        items.push(...arr);
-        page++;
-      }
-      return items;
-    }
-
-    async function fetchJson(url) {
-      const res = await fetch(url, { headers: { "Accept": "application/json" } });
-      // Helpful CORS error hint:
-      if (!res.ok) {
-        const txt = await res.text().catch(()=>'');
-        throw new Error(`HTTP ${res.status} – ${res.statusText}\n${txt.slice(0, 300)}`);
-      }
-      return res.json();
-    }
-
-    async function refresh() {
-      setStatus("", "");
-      tbody.innerHTML = `<tr><td colspan="9" class="center muted">Loading…</td></tr>`;
-      try {
-        const itemsRaw = await fetchAllPages();
-        allItems = itemsRaw.map(mapItem);
-        applyFilters();
-        lastUpdated.textContent = new Date().toLocaleTimeString();
-        note.textContent = `${allItems.length} items loaded.`;
-      } catch (err) {
-        console.error(err);
-        tbody.innerHTML = `<tr><td colspan="9" class="center"><div class="error">Failed to load items.<br>${escapeHtml(err.message)}</div></td></tr>`;
-        setStatus("warn", "If you see a CORS error, open this file via a simple local proxy (or serve it from the same domain as the API). For example, proxy the request on your server and fetch from that endpoint in this page.");
-      }
-    }
-
-    function setStatus(kind, message) {
-      if (!message) { alertBox.innerHTML = ""; return; }
-      alertBox.innerHTML = `<div class="${kind === 'warn' ? 'warn' : 'error'}">${escapeHtml(message)}</div>`;
-    }
-
-    // Controls
-    searchInput.addEventListener("input", applyFilters);
-    onlyWithBidsCb.addEventListener("change", applyFilters);
-    clearSearchBtn.addEventListener("click", () => { searchInput.value = ""; applyFilters(); });
-    refreshBtn.addEventListener("click", () => refresh());
-
-    // Auto refresh
-    let timer = null;
-    function scheduleAutoRefresh() {
-      if (timer) clearInterval(timer);
-      const secs = Math.max(10, Number(refreshSeconds.value || 60));
-      refreshEveryLabel.textContent = `${secs}s`;
-      if (autoRefreshCb.checked) {
-        timer = setInterval(refresh, secs * 1000);
-      }
-    }
-    autoRefreshCb.addEventListener("change", scheduleAutoRefresh);
-    refreshSeconds.addEventListener("change", scheduleAutoRefresh);
-
-    // Init
-    (async function init() {
-      await refresh();
-      scheduleAutoRefresh();
-    })();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
