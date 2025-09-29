@@ -64,67 +64,54 @@ const timeShort = d => (d ? d.toLocaleString() : "–");
 
 /* Field mapper with robust fallbacks */
 function mapItem(raw) {
-  const a = raw?.attributes || {};
-  const r = raw?.relationships || {};
+  // Your schema is flat (no attributes/relationships)
+  const title = raw.name || `Item ${raw.id ?? ""}`;
+  const lot = raw.number != null ? String(raw.number) : ""; // or use another field if you have explicit lot numbers
+  const image = Array.isArray(raw.pictures) && raw.pictures[0]?.url ? raw.pictures[0].url : null;
 
-  const title = a.title || a.name || a.item_title || a.itemName || `Item ${raw?.id ?? ""}`;
-  const lot   = a.lot_number || a.lot || a.sku || a.code || "";
-  const image = a.image_url || a.imageUrl || a.photo_url || a.photoUrl || a.thumbnail || null;
+  // Current bid comes from last_bid.amount (string like "18.00")
+  const currentPrice = raw.last_bid?.amount ? Number(String(raw.last_bid.amount).replace(/[^0-9.\-]/g, "")) : 0;
 
-  // Price candidates
-  // Prefer explicit *cents if present, else dollar amount fields
-  const priceCents =
-      a.current_bid_amount_cents ??
-      a.current_bid_cents ??
-      a.currentPriceCents ??
-      null;
+  // Count of bids
+  const bidsCount = Number(raw.bid_count ?? 0);
 
-  let currentPrice =
-      (priceCents != null ? priceCents / 100 : null) ??
-      a.current_bid_amount ?? a.current_price ?? a.currentPrice ?? a.price ?? a.min_bid ?? 0;
+  // Leading bidder display name
+  const bidder = raw.last_bid?.bidder?.display_name || "";
 
-  currentPrice = parseNumber(currentPrice);
+  // Status and end time
+  const endsAt = raw.end_at ? new Date(raw.end_at.replace(" ", "T") + (raw.end_at.endsWith("Z") ? "" : "Z")) : null;
+  // Derive a simple status string
+  let status = "open";
+  if (raw.paused) status = "paused";
+  if (raw.ended) status = "closed";
+  if (!raw.started) status = "pending";
 
-  const bidsCount = Number(a.bids_count ?? a.bidsCount ?? a.num_bids ?? 0);
+  // Buy-now: your sample shows allows_buy_now: false, but handle if present in others
+  const buyNow = raw.final_price ? Number(String(raw.final_price).replace(/[^0-9.\-]/g, "")) : 0;
 
-  const bidder =
-      a.leading_bidder_name ??
-      a.current_bidder_name ??
-      a.bidder_name ??
-      r?.current_bid?.data?.attributes?.name ??
-      r?.current_bidder?.data?.attributes?.name ??
-      a.high_bidder ??
-      "";
-
-  const statusRaw = (a.status || "").toString().toLowerCase();
-  const endsAtRaw = a.ends_at || a.end_time || a.ends || a.close_at || null;
-  const endsAt = endsAtRaw ? new Date(endsAtRaw) : null;
-  const status = statusRaw || (endsAt && endsAt < new Date() ? "closed" : "open");
-
-  // Buy-now price fallbacks (and cents)
-  const buyNowCents =
-      a.buy_now_price_cents ??
-      a.buyNowPriceCents ??
-      null;
-  let buyNow =
-      (buyNowCents != null ? buyNowCents / 100 : null) ??
-      a.buy_now_price ?? a.buyNowPrice ?? 0;
-  buyNow = parseNumber(buyNow);
+  // Helpful extras
+  const nextMinBid = raw.minimum_bid != null ? Number(raw.minimum_bid) : null;      // 20 in your sample
+  const startBid   = raw.start_bid != null ? Number(raw.start_bid) : null;          // "10.00" -> 10
+  const link       = raw.url || (raw.id ? `https://givebutter.com/auctions/${raw.auction_id}/items/${raw.id}` : "");
 
   return {
-    id: raw?.id,
-    title: safeText(title),
-    lot: safeText(lot),
+    id: raw.id,
+    title,
+    lot,
     image,
     currentPrice,
     bidsCount,
-    bidder: safeText(bidder),
+    bidder,
     status,
     endsAt,
     buyNow,
+    nextMinBid,
+    startBid,
+    link,
     raw
   };
 }
+
 
 /* Render */
 function render(items) {
@@ -158,7 +145,8 @@ function render(items) {
           <td>
             <div style="display:flex;flex-direction:column;gap:4px">
               <div>${escapeHtml(item.title)}</div>
-              ${item.id ? `<a class="link muted" href="https://givebutter.com/auctions/38788/items/${item.id}" target="_blank" rel="noopener">Open item ↗</a>` : ""}
+              ${item.link ? `<a class="link muted" href="${escapeAttr(item.link)}" target="_blank" rel="noopener">Open item ↗</a>` : ""}
+
             </div>
           </td>
           <td class="nowrap">${escapeHtml(item.lot || "")}</td>
@@ -176,7 +164,7 @@ function render(items) {
 
   // KPIs & Summary (totals)
   const count = items.length;
-  const withBids = items.filter(i => i.currentPrice > 0);
+  const withBids = items.filter(i => (i.bidsCount || 0) > 0);
   const total = withBids.reduce((s, i) => s + i.currentPrice, 0);
   const maxItem = withBids.reduce((max, i) => i.currentPrice > (max?.currentPrice || 0) ? i : max, null);
   const avg = withBids.length ? (total / withBids.length) : 0;
